@@ -1,0 +1,14 @@
+// In your API route or middleware
+import { get } from '@vercel/edge-config';
+
+export async function middleware(request) {
+  const redirects = await get('redirects');
+  const redirect = redirects.find(r => r.source === request.nextUrl.pathname);
+  
+  if (redirect) {
+    return Response.redirect(
+      new URL(redirect.destination, request.url),
+      redirect.permanent ? 308 : 307
+    );
+  }
+}
